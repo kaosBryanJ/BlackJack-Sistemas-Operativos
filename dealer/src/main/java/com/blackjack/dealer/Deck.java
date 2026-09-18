@@ -7,9 +7,11 @@ import java.util.List;
 public class Deck {
 
     private final List<Card> cards;
+    private final DeckSemaphore deckSemaphore;
 
     public Deck() {
         cards = new ArrayList<>();
+        deckSemaphore = new DeckSemaphore();
         createDeck();
     }
 
@@ -38,11 +40,23 @@ public class Deck {
     }
 
     public Card drawCard() {
-        if (cards.isEmpty()) {
-            throw new IllegalStateException("La baraja no tiene más cartas.");
-        }
 
-        return cards.remove(cards.size() - 1);
+        try {
+            deckSemaphore.acquire();
+
+            if (cards.isEmpty()) {
+                throw new IllegalStateException("La baraja no tiene más cartas.");
+            }
+
+            return cards.remove(cards.size() - 1);
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("El hilo fue interrumpido al intentar tomar una carta.", e);
+
+        } finally {
+            deckSemaphore.release();
+        }
     }
 
     public int remainingCards() {
