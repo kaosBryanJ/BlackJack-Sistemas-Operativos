@@ -39,10 +39,25 @@ public class Dealer {
             Card card = deck.drawCard();
             receiveCard(card);
 
-            System.out.println("Dealer toma carta: " + card);
-            System.out.println("Valor actual del Dealer: " + getValue());
+            System.out.println(
+                "Dealer toma carta: " + card
+            );
+
+            System.out.println(
+                "Valor actual del Dealer: " + getValue()
+            );
+
+            // Comprobar si el Dealer se pasó
+            if (isBust()) {
+                System.out.println(
+                    "Dealer se pasa con: " + getValue()
+                );
+                return;
+            }
         }
 
-        System.out.println("Dealer se planta con: " + getValue());
+        System.out.println(
+            "Dealer se planta con: " + getValue()
+        );
     }
 }

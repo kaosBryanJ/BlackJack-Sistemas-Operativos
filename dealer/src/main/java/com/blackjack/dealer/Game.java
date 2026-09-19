@@ -25,6 +25,9 @@ public class Game {
         // Dos cartas para el jugador
         player.receiveCard(deck.drawCard());
         player.receiveCard(deck.drawCard());
+    }
+
+    public void dealInitialDealerCards() {
 
         // Dos cartas para el Dealer
         dealer.receiveCard(deck.drawCard());
