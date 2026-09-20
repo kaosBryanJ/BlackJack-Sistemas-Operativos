@@ -51,4 +51,43 @@ public class Game {
             "Cartas restantes: " + deck.remainingCards()
         );
     }
+
+        public String determineResult(Player player) {
+
+        // Si el jugador se pasa de 21, pierde automáticamente
+        if (player.isBust()) {
+            return "PERDIÓ";
+        }
+
+        // Si el Dealer se pasa y el jugador no, gana el jugador
+        if (dealer.isBust()) {
+            return "GANÓ";
+        }
+
+        // Blackjack de ambos
+        if (player.hasBlackjack() && dealer.hasBlackjack()) {
+            return "EMPATE";
+        }
+
+        // Solo el jugador tiene Blackjack
+        if (player.hasBlackjack()) {
+            return "GANÓ";
+        }
+
+        // Solo el Dealer tiene Blackjack
+        if (dealer.hasBlackjack()) {
+            return "PERDIÓ";
+        }
+
+        // Comparar puntuaciones
+        if (player.getValue() > dealer.getValue()) {
+            return "GANÓ";
+        }
+
+        if (player.getValue() < dealer.getValue()) {
+            return "PERDIÓ";
+        }
+
+        return "EMPATE";
+    }
 }

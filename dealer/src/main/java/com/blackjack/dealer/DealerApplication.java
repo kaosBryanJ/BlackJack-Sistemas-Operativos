@@ -23,62 +23,54 @@ public class DealerApplication {
             System.out.println("          PARTIDA " + gameNumber);
             System.out.println("================================");
 
-            // Crear el hilo encargado de inicializar la partida
+            // Hilo encargado de inicializar la partida y la baraja
             GameThread gameThread = new GameThread();
-
             gameThread.start();
 
-            // Esperar a que termine la inicialización
             try {
-
                 gameThread.join();
-
             } catch (InterruptedException e) {
-
                 Thread.currentThread().interrupt();
-
                 System.out.println(
                     "El hilo de inicialización fue interrumpido."
                 );
-
-                return;
+                break;
             }
 
-            // Obtener la partida creada por el Game Thread
             Game game = gameThread.getGame();
 
             Deck deck = game.getDeck();
             Dealer dealer = game.getDealer();
 
-            // Crear los jugadores con diferentes estrategias
-List<Player> players = new ArrayList<>();
+            // Crear jugadores con diferentes estrategias
+            List<Player> players = new ArrayList<>();
 
-for (int i = 1; i <= numberOfPlayers; i++) {
+            for (int i = 1; i <= numberOfPlayers; i++) {
 
-    PlayerStrategy strategy;
+                PlayerStrategy strategy;
 
-    switch ((i - 1) % 3) {
+                switch ((i - 1) % 3) {
 
-        case 0:
-            strategy = new ConservativeStrategy();
-            break;
+                    case 0:
+                        strategy = new ConservativeStrategy();
+                        break;
 
-        case 1:
-            strategy = new StandardStrategy();
-            break;
+                    case 1:
+                        strategy = new StandardStrategy();
+                        break;
 
-        default:
-            strategy = new AggressiveStrategy();
-            break;
-    }
+                    default:
+                        strategy = new AggressiveStrategy();
+                        break;
+                }
 
-    players.add(
-        new Player(
-            "Jugador " + i,
-            strategy
-        )
-    );
-}
+                players.add(
+                    new Player(
+                        "Jugador " + i,
+                        strategy
+                    )
+                );
+            }
 
             System.out.println();
             System.out.println(
@@ -99,8 +91,10 @@ for (int i = 1; i <= numberOfPlayers; i++) {
             System.out.println("===== ESTADO INICIAL =====");
 
             for (Player player : players) {
+
                 System.out.println(
-                    player.getName() + ": "
+                    player.getName()
+                    + ": "
                     + player.getHand()
                 );
             }
@@ -114,31 +108,33 @@ for (int i = 1; i <= numberOfPlayers; i++) {
                 + deck.remainingCards()
             );
 
-            // Crear los hilos de los jugadores
+            // Crear hilos de jugadores
             List<PlayerThread> playerThreads =
-                    new ArrayList<>();
+                new ArrayList<>();
 
             for (Player player : players) {
+
                 playerThreads.add(
                     new PlayerThread(player, deck)
                 );
             }
 
-            // Crear el hilo del Dealer
+            // Crear hilo del Dealer
             DealerThread dealerThread =
-                    new DealerThread(dealer, deck);
+                new DealerThread(dealer, deck);
 
-            // Iniciar los hilos
             System.out.println();
             System.out.println("Iniciando los hilos...");
 
+            // Iniciar jugadores
             for (PlayerThread playerThread : playerThreads) {
                 playerThread.start();
             }
 
+            // Iniciar Dealer
             dealerThread.start();
 
-            // Esperar a que terminen los hilos
+            // Esperar a que todos los hilos terminen
             try {
 
                 for (PlayerThread playerThread : playerThreads) {
@@ -156,7 +152,7 @@ for (int i = 1; i <= numberOfPlayers; i++) {
                 );
             }
 
-            // Mostrar resultados de los jugadores
+            // Resultados de jugadores
             System.out.println();
             System.out.println(
                 "===== RESULTADOS DE LOS JUGADORES ====="
@@ -166,38 +162,62 @@ for (int i = 1; i <= numberOfPlayers; i++) {
 
                 System.out.println();
                 System.out.println(player.getName());
+
                 System.out.println(
-                    "Mano: " + player.getHand()
+                    "Estrategia: "
+                    + player.getStrategyName()
                 );
+
                 System.out.println(
-                    "Valor: " + player.getValue()
+                    "Mano: "
+                    + player.getHand()
                 );
+
+                System.out.println(
+                    "Valor: "
+                    + player.getValue()
+                );
+
                 System.out.println(
                     "¿Blackjack?: "
                     + player.hasBlackjack()
                 );
+
                 System.out.println(
-                    "¿Bust?: " + player.isBust()
+                    "¿Bust?: "
+                    + player.isBust()
+                );
+
+                System.out.println(
+                    "Resultado: "
+                    + game.determineResult(player)
                 );
             }
 
-            // Mostrar resultado del Dealer
+            // Resultado del Dealer
             System.out.println();
             System.out.println(
                 "===== RESULTADO DEL DEALER ====="
             );
+
             System.out.println(
-                "Mano: " + dealer.getHand()
+                "Mano: "
+                + dealer.getHand()
             );
+
             System.out.println(
-                "Valor: " + dealer.getValue()
+                "Valor: "
+                + dealer.getValue()
             );
+
             System.out.println(
                 "¿Blackjack?: "
                 + dealer.hasBlackjack()
             );
+
             System.out.println(
-                "¿Bust?: " + dealer.isBust()
+                "¿Bust?: "
+                + dealer.isBust()
             );
 
             System.out.println();
