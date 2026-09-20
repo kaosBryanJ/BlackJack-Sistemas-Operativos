@@ -1,4 +1,4 @@
-﻿package com.blackjack.dealer;
+package com.blackjack.dealer;
 
 public class AggressiveStrategy implements PlayerStrategy {
 
