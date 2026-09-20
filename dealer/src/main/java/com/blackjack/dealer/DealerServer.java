@@ -1,6 +1,9 @@
 package com.blackjack.dealer;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -24,14 +27,39 @@ public class DealerServer {
 
             while (true) {
 
-                Socket playerSocket = serverSocket.accept();
+                try (
+                    Socket playerSocket = serverSocket.accept();
 
-                System.out.println(
-                    "Jugador conectado desde: "
-                    + playerSocket.getRemoteSocketAddress()
-                );
+                    BufferedReader input = new BufferedReader(
+                        new InputStreamReader(
+                            playerSocket.getInputStream()
+                        )
+                    );
 
-                playerSocket.close();
+                    PrintWriter output = new PrintWriter(
+                        playerSocket.getOutputStream(),
+                        true
+                    )
+                ) {
+
+                    System.out.println(
+                        "Jugador conectado desde: "
+                        + playerSocket.getRemoteSocketAddress()
+                    );
+
+                    String playerName = input.readLine();
+
+                    System.out.println(
+                        "Nombre recibido: "
+                        + playerName
+                    );
+
+                    output.println(
+                        "Bienvenido "
+                        + playerName
+                        + ". Conexión con el Dealer establecida."
+                    );
+                }
             }
 
         } catch (IOException e) {
