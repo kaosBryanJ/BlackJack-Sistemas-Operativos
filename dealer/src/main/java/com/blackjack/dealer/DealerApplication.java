@@ -50,12 +50,35 @@ public class DealerApplication {
             Deck deck = game.getDeck();
             Dealer dealer = game.getDealer();
 
-            // Crear los jugadores
-            List<Player> players = new ArrayList<>();
+            // Crear los jugadores con diferentes estrategias
+List<Player> players = new ArrayList<>();
 
-            for (int i = 1; i <= numberOfPlayers; i++) {
-                players.add(new Player("Jugador " + i));
-            }
+for (int i = 1; i <= numberOfPlayers; i++) {
+
+    PlayerStrategy strategy;
+
+    switch ((i - 1) % 3) {
+
+        case 0:
+            strategy = new ConservativeStrategy();
+            break;
+
+        case 1:
+            strategy = new StandardStrategy();
+            break;
+
+        default:
+            strategy = new AggressiveStrategy();
+            break;
+    }
+
+    players.add(
+        new Player(
+            "Jugador " + i,
+            strategy
+        )
+    );
+}
 
             System.out.println();
             System.out.println(

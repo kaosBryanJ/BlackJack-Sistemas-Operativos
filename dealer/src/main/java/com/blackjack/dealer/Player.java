@@ -4,10 +4,18 @@ public class Player {
 
     private final String name;
     private final Hand hand;
+    private final PlayerStrategy strategy;
 
+    // Constructor por defecto: usa estrategia Normal
     public Player(String name) {
+        this(name, new StandardStrategy());
+    }
+
+    // Constructor que permite elegir una estrategia
+    public Player(String name, PlayerStrategy strategy) {
         this.name = name;
         this.hand = new Hand();
+        this.strategy = strategy;
     }
 
     public String getName() {
@@ -34,11 +42,20 @@ public class Player {
         hand.addCard(card);
     }
 
+    public String getStrategyName() {
+        return strategy.getName();
+    }
+
     public boolean shouldHit() {
-        return getValue() < 17;
+        return strategy.shouldHit(hand);
     }
 
     public void playTurn(Deck deck) {
+
+        System.out.println(
+            name + " utiliza estrategia: "
+            + strategy.getName()
+        );
 
         while (shouldHit()) {
 
@@ -50,20 +67,22 @@ public class Player {
             );
 
             System.out.println(
-                "Valor actual de " + name + ": " + getValue()
+                "Valor actual de "
+                + name + ": " + getValue()
             );
 
             if (isBust()) {
                 System.out.println(
-                    name + " se pasa con: " + getValue()
+                    name + " se pasa con: "
+                    + getValue()
                 );
+                return;
             }
         }
 
-        if (!isBust()) {
-            System.out.println(
-                name + " se planta con: " + getValue()
-            );
-        }
+        System.out.println(
+            name + " se planta con: "
+            + getValue()
+        );
     }
 }
