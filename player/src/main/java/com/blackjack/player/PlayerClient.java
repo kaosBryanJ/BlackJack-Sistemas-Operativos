@@ -13,17 +13,26 @@ public class PlayerClient {
 
     public static void main(String[] args) {
 
-        String playerName = "Jugador 1";
+        String playerName = "Jugador";
+
+        if (args.length > 0) {
+            playerName = args[0];
+        }
 
         System.out.println("================================");
         System.out.println("       BLACKJACK PLAYER");
         System.out.println("================================");
 
         try (
-            Socket socket = new Socket(DEALER_HOST, DEALER_PORT);
+            Socket socket = new Socket(
+                DEALER_HOST,
+                DEALER_PORT
+            );
 
             BufferedReader input = new BufferedReader(
-                new InputStreamReader(socket.getInputStream())
+                new InputStreamReader(
+                    socket.getInputStream()
+                )
             );
 
             PrintWriter output = new PrintWriter(
