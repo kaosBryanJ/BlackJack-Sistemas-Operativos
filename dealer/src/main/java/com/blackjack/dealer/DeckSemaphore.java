@@ -7,7 +7,9 @@ public class DeckSemaphore {
     private final Semaphore semaphore;
 
     public DeckSemaphore() {
-        semaphore = new Semaphore(1);
+        // Un solo permiso: solo un hilo puede acceder
+        // a la baraja al mismo tiempo.
+        semaphore = new Semaphore(1, true);
     }
 
     public void acquire() throws InterruptedException {

@@ -6,10 +6,13 @@ public class Game {
     private final Dealer dealer;
 
     public Game() {
+
         deck = new Deck();
         dealer = new Dealer();
 
-        deck.shuffle();
+        System.out.println(
+            "Baraja creada y mezclada."
+        );
     }
 
     public Deck getDeck() {
@@ -22,14 +25,21 @@ public class Game {
 
     public void dealInitialCards(Player player) {
 
-        // Dos cartas para el jugador
+        System.out.println(
+            "[" + player.getName()
+            + "] recibiendo cartas iniciales."
+        );
+
         player.receiveCard(deck.drawCard());
         player.receiveCard(deck.drawCard());
     }
 
     public void dealInitialDealerCards() {
 
-        // Dos cartas para el Dealer
+        System.out.println(
+            "[Crupier] recibiendo cartas iniciales."
+        );
+
         dealer.receiveCard(deck.drawCard());
         dealer.receiveCard(deck.drawCard());
     }
@@ -52,40 +62,34 @@ public class Game {
         );
     }
 
-        public String determineResult(Player player) {
+    public String determineResult(Player player) {
 
-        // Si el jugador se pasa de 21, pierde automáticamente
         if (player.isBust()) {
-            return "PERDIÓ";
+            return "PERDI\u00d3";
         }
 
-        // Si el Dealer se pasa y el jugador no, gana el jugador
         if (dealer.isBust()) {
-            return "GANÓ";
+            return "GAN\u00d3";
         }
 
-        // Blackjack de ambos
         if (player.hasBlackjack() && dealer.hasBlackjack()) {
             return "EMPATE";
         }
 
-        // Solo el jugador tiene Blackjack
         if (player.hasBlackjack()) {
-            return "GANÓ";
+            return "GAN\u00d3";
         }
 
-        // Solo el Dealer tiene Blackjack
         if (dealer.hasBlackjack()) {
-            return "PERDIÓ";
+            return "PERDI\u00d3";
         }
 
-        // Comparar puntuaciones
         if (player.getValue() > dealer.getValue()) {
-            return "GANÓ";
+            return "GAN\u00d3";
         }
 
         if (player.getValue() < dealer.getValue()) {
-            return "PERDIÓ";
+            return "PERDI\u00d3";
         }
 
         return "EMPATE";

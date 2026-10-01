@@ -13,13 +13,15 @@ public class Deck {
         cards = new ArrayList<>();
         deckSemaphore = new DeckSemaphore();
         createDeck();
+        shuffle();
     }
 
     private void createDeck() {
+
         String[] suits = {
             "Corazones",
             "Diamantes",
-            "Tréboles",
+            "Treboles",
             "Picas"
         };
 
@@ -29,6 +31,7 @@ public class Deck {
         };
 
         for (String suit : suits) {
+
             for (String rank : ranks) {
                 cards.add(new Card(rank, suit));
             }
@@ -41,21 +44,56 @@ public class Deck {
 
     public Card drawCard() {
 
+        String actor = Thread.currentThread().getName();
+
+        boolean acquired = false;
+
+        System.out.println(
+            "[" + actor + "] esperando acceso a la baraja..."
+        );
+
         try {
+
             deckSemaphore.acquire();
+            acquired = true;
+
+            System.out.println(
+                "[" + actor + "] obtuvo acceso a la baraja."
+            );
 
             if (cards.isEmpty()) {
-                throw new IllegalStateException("La baraja no tiene más cartas.");
+                throw new IllegalStateException(
+                    "La baraja no tiene mas cartas."
+                );
             }
 
-            return cards.remove(cards.size() - 1);
+            Card card = cards.remove(cards.size() - 1);
+
+            System.out.println(
+                "[" + actor + "] tomo: " + card
+            );
+
+            return card;
 
         } catch (InterruptedException e) {
+
             Thread.currentThread().interrupt();
-            throw new IllegalStateException("El hilo fue interrumpido al intentar tomar una carta.", e);
+
+            throw new IllegalStateException(
+                "El hilo fue interrumpido al intentar tomar una carta.",
+                e
+            );
 
         } finally {
-            deckSemaphore.release();
+
+            if (acquired) {
+
+                deckSemaphore.release();
+
+                System.out.println(
+                    "[" + actor + "] libero la baraja."
+                );
+            }
         }
     }
 
