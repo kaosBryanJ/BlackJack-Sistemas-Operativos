@@ -1,0 +1,60 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blackjack-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blackjack-api
+  template:
+    metadata:
+      labels:
+        app: blackjack-api
+    spec:
+      containers:
+        - name: api
+          image: blackjack-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: PROCESSOR_URL
+              value: http://blackjack-processor:8001
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+            successThreshold: 1
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 5
+            successThreshold: 1
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blackjack-api
+spec:
+  selector:
+    app: blackjack-api
+  ports:
+    - port: 8000
+      targetPort: 8000
+  type: ClusterIP
