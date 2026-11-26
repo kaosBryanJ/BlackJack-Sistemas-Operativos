@@ -15,3 +15,12 @@ Thumbs.db
 # Archivos temporales
 *.tmp
 *.temp
+# Python
+__pycache__/
+*.py[cod]
+
+# Segundo parcial - resultados generados
+segundo-parcial/results/
+
+# Respaldos locales
+backup_antes_hilos_20260930_193852/

@@ -1,0 +1,2 @@
+﻿fastapi[standard]==0.165.0
+psycopg[pool,binary]==3.3.9
